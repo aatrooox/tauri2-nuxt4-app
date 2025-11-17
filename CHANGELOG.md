@@ -1,6 +1,17 @@
 # Changelog
 
 
+## v0.2.3
+
+
+### 🚀 Enhancements
+
+- Init ([a0eccab](https://github.com/aatrooox/tauri2-nuxt4-app/commit/a0eccab))
+
+### ❤️ Contributors
+
+- Aatrox <gnakzz@qq.com>
+
 ## v0.2.2
 
 [compare changes](https://github.com/aatrooox/community-service-center/compare/v0.1.39...v0.2.2)

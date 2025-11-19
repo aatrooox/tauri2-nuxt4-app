@@ -4948,7 +4948,7 @@ dependencies = [
 
 [[package]]
 name = "tauri-v2-nuxt-app"
-version = "0.2.2"
+version = "0.4.2"
 dependencies = [
  "log",
  "serde",

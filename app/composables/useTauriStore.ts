@@ -1,5 +1,6 @@
 // Tauri Store 键值存储 Composable
 import { Store } from '@tauri-apps/plugin-store'
+import { useAsyncState } from '~/utils/async'
 
 export class StoreService {
   private store: Store | null = null
@@ -152,200 +153,53 @@ const storeService = new StoreService()
 export function useTauriStore(fileName?: string) {
   const service = fileName ? new StoreService(fileName) : storeService
   const isInitialized = ref(false)
-  const isLoading = ref(false)
-  const error = ref<string | null>(null)
+  const { isLoading, error, runAsync } = useAsyncState()
 
   const initStore = async () => {
     if (isInitialized.value)
       return
 
-    isLoading.value = true
-    error.value = null
-
-    try {
+    await runAsync(async () => {
       await service.init()
       isInitialized.value = true
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : 'Store 初始化失败'
-      throw err
-    }
-    finally {
-      isLoading.value = false
-    }
+    }, 'Store 初始化失败')
   }
 
-  const setItem = async (key: string, value: any) => {
-    isLoading.value = true
-    error.value = null
+  const setItem = (key: string, value: any) =>
+    runAsync(() => service.set(key, value), '设置值失败')
 
-    try {
-      await service.set(key, value)
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : '设置值失败'
-      throw err
-    }
-    finally {
-      isLoading.value = false
-    }
-  }
+  const getItem = <T>(key: string) =>
+    runAsync(() => service.get<T>(key), '获取值失败')
 
-  const getItem = async <T>(key: string): Promise<T | null> => {
-    isLoading.value = true
-    error.value = null
+  const deleteItem = (key: string) =>
+    runAsync(() => service.delete(key), '删除值失败')
 
-    try {
-      const result = await service.get<T>(key)
-      return result
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : '获取值失败'
-      throw err
-    }
-    finally {
-      isLoading.value = false
-    }
-  }
+  const clearStore = () =>
+    runAsync(() => service.clear(), '清空存储失败')
 
-  const deleteItem = async (key: string) => {
-    isLoading.value = true
-    error.value = null
+  const saveStore = () =>
+    runAsync(() => service.save(), '保存存储失败')
 
-    try {
-      await service.delete(key)
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : '删除值失败'
-      throw err
-    }
-    finally {
-      isLoading.value = false
-    }
-  }
+  const getKeys = () =>
+    runAsync(() => service.keys(), '获取键列表失败')
 
-  const clearStore = async () => {
-    isLoading.value = true
-    error.value = null
+  const getValues = () =>
+    runAsync(() => service.values(), '获取值列表失败')
 
-    try {
-      await service.clear()
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : '清空存储失败'
-      throw err
-    }
-    finally {
-      isLoading.value = false
-    }
-  }
+  const getEntries = () =>
+    runAsync(() => service.entries(), '获取条目列表失败')
 
-  const saveStore = async () => {
-    isLoading.value = true
-    error.value = null
+  const getLength = () =>
+    runAsync(() => service.length(), '获取存储长度失败')
 
-    try {
-      await service.save()
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : '保存存储失败'
-      throw err
-    }
-    finally {
-      isLoading.value = false
-    }
-  }
-
-  const getKeys = async () => {
-    isLoading.value = true
-    error.value = null
-
-    try {
-      const result = await service.keys()
-      return result
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : '获取键列表失败'
-      throw err
-    }
-    finally {
-      isLoading.value = false
-    }
-  }
-
-  const getValues = async () => {
-    isLoading.value = true
-    error.value = null
-
-    try {
-      const result = await service.values()
-      return result
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : '获取值列表失败'
-      throw err
-    }
-    finally {
-      isLoading.value = false
-    }
-  }
-
-  const getEntries = async () => {
-    isLoading.value = true
-    error.value = null
-
-    try {
-      const result = await service.entries()
-      return result
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : '获取条目列表失败'
-      throw err
-    }
-    finally {
-      isLoading.value = false
-    }
-  }
-
-  const getLength = async () => {
-    isLoading.value = true
-    error.value = null
-
-    try {
-      const result = await service.length()
-      return result
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : '获取存储长度失败'
-      throw err
-    }
-    finally {
-      isLoading.value = false
-    }
-  }
-
-  const hasKey = async (key: string) => {
-    isLoading.value = true
-    error.value = null
-
-    try {
-      const result = await service.has(key)
-      return result
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : '检查键是否存在失败'
-      throw err
-    }
-    finally {
-      isLoading.value = false
-    }
-  }
+  const hasKey = (key: string) =>
+    runAsync(() => service.has(key), '检查键是否存在失败')
 
   return {
     // 状态
     isInitialized: readonly(isInitialized),
-    isLoading: readonly(isLoading),
-    error: readonly(error),
+    isLoading,
+    error,
 
     // 方法
     initStore,

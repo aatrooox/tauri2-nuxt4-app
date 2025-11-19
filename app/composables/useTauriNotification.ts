@@ -4,6 +4,7 @@ import {
   requestPermission,
   sendNotification,
 } from '@tauri-apps/plugin-notification'
+import { useAsyncState } from '~/utils/async'
 
 export class NotificationService {
   async checkPermission(): Promise<boolean> {
@@ -79,108 +80,35 @@ const notificationService = new NotificationService()
  */
 export function useTauriNotification() {
   const hasPermission = ref(false)
-  const isLoading = ref(false)
-  const error = ref<string | null>(null)
+  const { isLoading, error, runAsync } = useAsyncState()
 
   const checkPermission = async () => {
-    isLoading.value = true
-    error.value = null
-
-    try {
+    return runAsync(async () => {
       const granted = await notificationService.checkPermission()
       hasPermission.value = granted
       return granted
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : '检查通知权限失败'
-      throw err
-    }
-    finally {
-      isLoading.value = false
-    }
+    }, '检查通知权限失败')
   }
 
   const requestPermission = async () => {
-    isLoading.value = true
-    error.value = null
-
-    try {
+    return runAsync(async () => {
       const granted = await notificationService.requestPermission()
       hasPermission.value = granted
       return granted
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : '请求通知权限失败'
-      throw err
-    }
-    finally {
-      isLoading.value = false
-    }
+    }, '请求通知权限失败')
   }
 
-  const sendNotification = async (title: string, body: string, icon?: string) => {
-    isLoading.value = true
-    error.value = null
+  const sendNotification = (title: string, body: string, icon?: string) =>
+    runAsync(() => notificationService.sendNotification(title, body, icon), '发送通知失败')
 
-    try {
-      await notificationService.sendNotification(title, body, icon)
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : '发送通知失败'
-      throw err
-    }
-    finally {
-      isLoading.value = false
-    }
-  }
+  const sendSuccessNotification = (message: string) =>
+    runAsync(() => notificationService.sendSuccessNotification(message), '发送成功通知失败')
 
-  const sendSuccessNotification = async (message: string) => {
-    isLoading.value = true
-    error.value = null
+  const sendErrorNotification = (message: string) =>
+    runAsync(() => notificationService.sendErrorNotification(message), '发送错误通知失败')
 
-    try {
-      await notificationService.sendSuccessNotification(message)
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : '发送成功通知失败'
-      throw err
-    }
-    finally {
-      isLoading.value = false
-    }
-  }
-
-  const sendErrorNotification = async (message: string) => {
-    isLoading.value = true
-    error.value = null
-
-    try {
-      await notificationService.sendErrorNotification(message)
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : '发送错误通知失败'
-      throw err
-    }
-    finally {
-      isLoading.value = false
-    }
-  }
-
-  const sendInfoNotification = async (title: string, message: string) => {
-    isLoading.value = true
-    error.value = null
-
-    try {
-      await notificationService.sendInfoNotification(title, message)
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : '发送信息通知失败'
-      throw err
-    }
-    finally {
-      isLoading.value = false
-    }
-  }
+  const sendInfoNotification = (title: string, message: string) =>
+    runAsync(() => notificationService.sendInfoNotification(title, message), '发送信息通知失败')
 
   // 初始化时检查权限
   onMounted(() => {
@@ -190,8 +118,8 @@ export function useTauriNotification() {
   return {
     // 状态
     hasPermission: readonly(hasPermission),
-    isLoading: readonly(isLoading),
-    error: readonly(error),
+    isLoading,
+    error,
 
     // 方法
     checkPermission,

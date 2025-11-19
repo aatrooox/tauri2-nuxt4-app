@@ -1,4 +1,5 @@
 // Tauri 服务统一初始化 Composable
+import { useSettingRepository } from './repositories/useSettingRepository'
 
 /**
  * 统一初始化所有 Tauri 服务
@@ -13,6 +14,8 @@ export function useTauriServices() {
   const { initStore, setItem } = useTauriStore()
   const { sendSuccessNotification, sendErrorNotification } = useTauriNotification()
   const { initDatabase } = useTauriSQL()
+  // 引入 Repository 用于初始化默认数据（如果需要）
+  // const { setSetting } = useSettingRepository()
 
   const initializeServices = async () => {
     if (isInitialized.value)

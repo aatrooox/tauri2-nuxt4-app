@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { toast } from 'vue-sonner'
+import { useUserRepository } from '~/composables/repositories/useUserRepository'
 
 useHead({ title: 'Tauri 插件演示' })
 
 const { get: httpGet } = useTauriHTTP()
-const { createUser, getAllUsers, autoInit: initSQL } = useTauriSQL()
+const { autoInit: initSQL } = useTauriSQL()
+const { createUser, getAllUsers } = useUserRepository()
 const { sendNotification } = useTauriNotification()
 const { setItem, getItem, initStore } = useTauriStore()
 

@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.3.0
+
+[compare changes](https://github.com/aatrooox/tauri2-nuxt4-app/compare/v0.2.3...v0.3.0)
+
+### 🚀 Enhancements
+
+- 优化分层架构 ([0d2dfde](https://github.com/aatrooox/tauri2-nuxt4-app/commit/0d2dfde))
+
+### 🏡 Chore
+
+- **release:** V0.2.3 ([df23a46](https://github.com/aatrooox/tauri2-nuxt4-app/commit/df23a46))
+- Eslint ([06d422d](https://github.com/aatrooox/tauri2-nuxt4-app/commit/06d422d))
+
+### ❤️ Contributors
+
+- Aatrox <gnakzz@qq.com>
+
 ## v0.2.3
 
 

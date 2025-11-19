@@ -1,5 +1,4 @@
 // Tauri 服务统一初始化 Composable
-import { useSettingRepository } from './repositories/useSettingRepository'
 
 /**
  * 统一初始化所有 Tauri 服务

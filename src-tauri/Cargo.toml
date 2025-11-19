@@ -1,6 +1,6 @@
 [package]
 name = "tauri-v2-nuxt-app"
-version = "0.2.2"
+version = "0.4.2"
 description = "tauri-v2-nuxt-app - A template for fast development of desktop applications using Tauri and Nuxt.js"
 authors = [ "aatrox" ]
 license = "MIT"

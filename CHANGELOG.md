@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.4.0
+
+[compare changes](https://github.com/aatrooox/tauri2-nuxt4-app/compare/v0.3.0...v0.4.0)
+
+### 🏡 Chore
+
+- **release:** V0.3.0 ([97b29b9](https://github.com/aatrooox/tauri2-nuxt4-app/commit/97b29b9))
+
+### ❤️ Contributors
+
+- Aatrox <gnakzz@qq.com>
+
 ## v0.3.0
 
 [compare changes](https://github.com/aatrooox/tauri2-nuxt4-app/compare/v0.2.3...v0.3.0)
